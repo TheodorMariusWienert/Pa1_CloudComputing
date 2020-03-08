@@ -32,8 +32,8 @@ public class WordCount {
                   throws IOException,
                          InterruptedException{
                            count=0;
-                           tree =  new TreeMap<Integer, String>();
-                         }
+                           tree =  new TreeMap<Integer, Text>();
+            u             }
 		@Override
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
 			int sum = 0;

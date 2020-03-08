@@ -31,7 +31,7 @@ public class WordCount {
       protected void setup(Context context)
                   throws IOException,
                          InterruptedException{
-                           count=0
+                           count=0;
                            tree =  new TreeMap<Integer, String>();
                          }
 		@Override
@@ -58,7 +58,7 @@ public class WordCount {
                          for(Map.Entry<Integer,String> element : treeMap.entrySet()) {
                            context.write(element.getValue(), new IntWritable(-element.getKey()));
                          }
-    }           
+    }
 
 
 	}

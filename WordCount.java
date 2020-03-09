@@ -45,7 +45,7 @@ public class WordCount {
                                 sum += val.get();
                         }
 
-        tree.put((-sum).toString()+"/"key.toString()), key.toString());
+        tree.put((-sum).toString()+"/"+key.toString(), key.toString());
         //tree.pollLastEntry();
               }
 
@@ -59,7 +59,7 @@ public class WordCount {
 
                                  for(Map.Entry<Integer,String> element : tree.entrySet()) {
                                    String[] arrOfStr = element.getKey().toString().split("/", 2);
-                                   int number = Integer.parseInt(arrOfStr[0]);	
+                                   int number = Integer.parseInt(arrOfStr[0]);
                                    context.write(new Text(element.getValue()), new IntWritable(number));
                                         count++;
                                 if(count==10)break;

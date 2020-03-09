@@ -76,7 +76,7 @@ public class WordCount {
                                InterruptedException{
                                 int count =0;
                                  for (Entry element : tree) {
-                                   context.write(new Text(element.word()), new IntWritable(-element.count()));
+                                   context.write(new Text(element.word, new IntWritable(-element.count));
                                         count++;
                                 if(count==10)break;
                                  }

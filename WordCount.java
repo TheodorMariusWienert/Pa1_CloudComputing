@@ -50,11 +50,16 @@ public class WordCount {
                         for (IntWritable val : values) {
                                 sum += val.get();
                         }
-                         Integer temp=new Integer(-sum)
 
                          Map.Entry<String,Integer> entry =
                      new AbstractMap.SimpleEntry<String, Integer>(key.toString(), -sum);
-                     tree.add(entry3);
+                     if(tree.size()<10)tree.add(entry);
+                     else{
+                       tree.add(entry);
+                       tree.pollLast()
+                       
+                     }
+
         //tree.pollLastEntry();
               }
 
@@ -67,7 +72,7 @@ public class WordCount {
                                InterruptedException{
                                   int count=0;
                                  for(Map.Entry<String,Integer> element : tree) {
-                                   context.write(new Text(element.getKey()), new IntWritable(element.getValue()));
+                                   context.write(new Text(element.getKey()), new IntWritable(-element.getValue()));
                                         count++;
                                 if(count==10)break;
                                  }

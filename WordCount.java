@@ -13,6 +13,18 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 
 public class WordCount {
+
+  public static class Entry
+    {
+      public  String word;
+      public  int count;
+
+    public Entry(String word2, int count2 )
+    {
+        word=word2;
+        count=count2;
+    }
+
   public static class WordCountMap extends Mapper<Object, Text, Text, IntWritable> {
      List<String> commonWords = Arrays.asList("the", "a", "an", "and", "of", "to", "in", "am", "is", "are", "at", "not");
      @Override
@@ -30,13 +42,19 @@ public class WordCount {
 
     public static class WordCountReduce extends Reducer<Text, IntWritable, Text, IntWritable> {
 
-      TreeMap<Integer, String> tree;
+
+      SortedSet<Entry> tree;
         @Override
       protected void setup(Context context)
                   throws IOException,
                          InterruptedException{
-                           count=0;
-                           tree =  new TreeMap<Integer, String>();
+
+                           tree  = new TreeSet<>(new Comparator<Entry>() {
+                                    @Override
+                                    public int compare(Entry s1, Entry s2) {
+                                        return s1.count-s2.count;
+                                    }
+                                });
                          }
                 @Override
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
@@ -45,7 +63,7 @@ public class WordCount {
                                 sum += val.get();
                         }
 
-        tree.put(-sum, key.toString());
+        tree.add(new Entry( key.toString(),-sum));
         //tree.pollLastEntry();
               }
 
@@ -56,9 +74,9 @@ public class WordCount {
             protected void cleanup(org.apache.hadoop.mapreduce.Reducer.Context context)
                         throws IOException,
                                InterruptedException{
-
-                                 for(Map.Entry<Integer,String> element : tree.entrySet()) {
-                                   context.write(new Text(element.getValue()), new IntWritable(-element.getKey()));
+                                int count =0;
+                                 for (Entry element : tree) {
+                                   context.write(new Text(element.word()), new IntWritable(-element.count()));
                                         count++;
                                 if(count==10)break;
                                  }
@@ -81,4 +99,9 @@ public class WordCount {
                    job.setJarByClass(WordCount.class);
                            System.exit(job.waitForCompletion(true) ? 0 : 1);
                    }
+
+}
+
+
+
            }

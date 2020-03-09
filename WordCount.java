@@ -30,19 +30,20 @@ public class WordCount {
 
     public static class WordCountReduce extends Reducer<Text, IntWritable, Text, IntWritable> {
 
-      TreeSet<String, Integer> tree;
+      TreeSet<Map.Entry<String, Integer>> tree;
         @Override
       protected void setup(Context context)
                   throws IOException,
                          InterruptedException{
 
-                           tree =  n=new TreeSet<>(new Comparator<Map.Entry<String, Integer>>(){
-            @Override
-            public int compare(Map.Entry<String, Integer> me1, Map.Entry<String, Integer> me2) {
-                int temp=me1.getValue().compareTo(me2.getValue());
-                if(temp==0)  return me1.getKey().compareTo(me2.getKey());
-                else return temp;
-            }   });
+                           tree =new TreeSet<>(new Comparator<Map.Entry<String, Integer>>(){
+                              @Override
+                              public int compare(Map.Entry<String, Integer> me1, Map.Entry<String, Integer> me2) {
+                                  int temp=me1.getValue().compareTo(me2.getValue());
+                                  if(temp==0)  return me1.getKey().compareTo(me2.getKey());
+                                  else return temp;
+                              }   });
+                            }
                 @Override
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
                         int sum = 0;

@@ -44,8 +44,9 @@ public class WordCount {
                         for (IntWritable val : values) {
                                 sum += val.get();
                         }
+                         Integer temp=new Integer(-sum)
 
-        tree.put((-sum).toString()+"/"+key.toString(), key.toString());
+        tree.put(temp.toString()+"/"+key.toString(), key.toString());
         //tree.pollLastEntry();
               }
 
@@ -56,8 +57,8 @@ public class WordCount {
             protected void cleanup(org.apache.hadoop.mapreduce.Reducer.Context context)
                         throws IOException,
                                InterruptedException{
-
-                                 for(Map.Entry<Integer,String> element : tree.entrySet()) {
+                                  int count=0;
+                                 for(Map.Entry<String,String> element : tree.entrySet()) {
                                    String[] arrOfStr = element.getKey().toString().split("/", 2);
                                    int number = Integer.parseInt(arrOfStr[0]);
                                    context.write(new Text(element.getValue()), new IntWritable(number));

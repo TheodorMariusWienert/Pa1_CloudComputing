@@ -30,14 +30,19 @@ public class WordCount {
 
     public static class WordCountReduce extends Reducer<Text, IntWritable, Text, IntWritable> {
 
-      TreeMap<String, String> tree;
+      TreeSet<String, Integer> tree;
         @Override
       protected void setup(Context context)
                   throws IOException,
                          InterruptedException{
 
-                           tree =  new TreeMap<String, String>();
-                         }
+                           tree =  n=new TreeSet<>(new Comparator<Map.Entry<String, Integer>>(){
+            @Override
+            public int compare(Map.Entry<String, Integer> me1, Map.Entry<String, Integer> me2) {
+                int temp=me1.getValue().compareTo(me2.getValue());
+                if(temp==0)  return me1.getKey().compareTo(me2.getKey());
+                else return temp;
+            }   });
                 @Override
         public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
                         int sum = 0;
@@ -46,7 +51,9 @@ public class WordCount {
                         }
                          Integer temp=new Integer(-sum)
 
-        tree.put(temp.toString()+"/"+key.toString(), key.toString());
+                         Map.Entry<String,Integer> entry =
+                     new AbstractMap.SimpleEntry<String, Integer>(key.toString(), -sum);
+                     tree.add(entry3);
         //tree.pollLastEntry();
               }
 
@@ -58,10 +65,8 @@ public class WordCount {
                         throws IOException,
                                InterruptedException{
                                   int count=0;
-                                 for(Map.Entry<String,String> element : tree.entrySet()) {
-                                   String[] arrOfStr = element.getKey().toString().split("/", 2);
-                                   int number = Integer.parseInt(arrOfStr[0]);
-                                   context.write(new Text(element.getValue()), new IntWritable(number));
+                                 for(Map.Entry<String,Integer> element : tree) {
+                                   context.write(new Text(element.getKey()), new IntWritable(element.getValue()));
                                         count++;
                                 if(count==10)break;
                                  }
